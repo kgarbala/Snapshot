@@ -1,30 +1,24 @@
-import os, sys, marshal, pickle, difflib, pprint, tkinter
-def temp1():
-	print ("222")
-def createSnapshot():
-    directory=input("Wprowadz sciezke do katalogu migawki: ")
-    filename=input("Wprowadz nazwe pliku migawki: ")  
+import os, sys, marshal, pickle, difflib, pprint
+def createSnapshot(directory="C:\snap", filename="snapshot.txt"):
     print(directory, filename)
-    cumulative_directories= []
+    cumulative_directories = []
     cumulative_files = []
     for root, dires, files in os.walk(directory):
-        cumulative_directories+=dires
-        cumulative_files+=files
-
+        cumulative_directories += dires
+        cumulative_files += files
     try:
-       
-       output=open(filename, 'wb')
+       output = open(filename, 'wb')
        pickle.dump(cumulative_directories, output, -1)
        pickle.dump(cumulative_files, output, -1)
        output.close()
-       print ("udalo sie")
+       print("udalo sie")
     except:
-        print ("Problemy przy zapisie")
+        print("Problemy przy zapisie")
     input("Nacisniej [Enter]..")
     return
 
 def listSnapshots(extension):
-    snaplist=[]
+    snaplist = []
     filelist = os.listdir(os.curdir)
     for item in filelist:
         if item.endswith(extension)==True:
@@ -36,46 +30,46 @@ def listSnapshots(extension):
     input("Nacisnij [Enter]..")
 def compareSnapshot(snapfile1, snapfile2):
     try:
-        pk1_file=open(snapfile1, 'rb')
-        dirs1=pickle.load(pk1_file)
-        files1= pickle.load(pk1_file)
+        pk1_file = open(snapfile1, 'rb')
+        dirs1 = pickle.load(pk1_file)
+        files1 = pickle.load(pk1_file)
         pk1_file.close()
 
-        pk2_file=open(snapfile2, 'rb')
-        dirs2=pickle.load(pk2_file)
-        files2= pickle.load(pk2_file)
+        pk2_file = open(snapfile2, 'rb')
+        dirs2 = pickle.load(pk2_file)
+        files2 = pickle.load(pk2_file)
         pk2_file.close()
     except:
-        print ("Wystapily problemy przy odczycie plikow migawek")
+        print("Wystapily problemy przy odczycie plikow migawek")
         input("Nacisnij [Enter]..")
         return
 
     result_dirs = list(difflib.unified_diff(dirs1, dirs2))
     result_files = list(difflib.unified_diff(files1, files2))
 
-    added_dirs=[]
-    removed_dirs=[]
-    added_files=[]
-    removed_files=[]
+    added_dirs = []
+    removed_dirs = []
+    added_files = []
+    removed_files = []
     
     for result in result_files:
         if result.endswith("\n")==False:
             if result.startswith('+'):
-                resultadd=result.strip('+')
+                resultadd = result.strip('+')
                 added_files.append(resultadd)
             elif result.startswith('-'):
-                resultsubtract=result.strip('-')
+                resultsubtract = result.strip('-')
                 removed_files.append(resultsubtract)
 
     for result in result_dirs:
         if result.endswith("\n")==False:
             if result.startswith('+'):
-                resultadd=result.strip('+')
+                resultadd = result.strip('+')
                 added_dirs.append(resultadd)
             elif result.startswith('-'):
-                resultsubtract=result.strip('-')
+                resultsubtract = result.strip('-')
                 removed_dirs.append(resultsubtract)
-     
+
     print ("\n\nAdded Directories:\n")
     print (added_dirs)
     print ("\n\nAdded Files:\n")
@@ -87,7 +81,13 @@ def compareSnapshot(snapfile1, snapfile2):
     input("\n\nNacinij [Enter]..")
     
 def showHelp():
-    print('''PROGRAM TWORZY MIGAWKI KATALOGOW I PLIKOW W DWOCH OSTEPACH CZASU
+    print('''snapshot.py
+PROGRAM DO WYKONYWANIE MIGAWEK KATALOGOW I PLIKOW
+POWSTAL NA PODSTAWIE PROJEKTU JAMES'A O. KNOWLTON'A
+W KSIĄŻCE "PYTHON PROJEKTY DO WYKORZYSTANIA".
+Python: 3.4.1
+Platoforma: Windows
+KRZYSZTOF GARBALA
     ''')
         
 def invalidChoice():
